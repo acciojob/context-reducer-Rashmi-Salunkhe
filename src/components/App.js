@@ -1,104 +1,50 @@
-import React, { useContext } from "react";
-import { UserContext } from "../index";
+// App.js
+import React, { useContext, useState } from 'react';
+import { AppContext, AppProvider } from './Context';
 
 const App = () => {
-  const oj = useContext(UserContext);
-  const {
-    name,
-    setName,
-    list,
-    setList,
-    authenticated,
-    setAuthenticated,
-    userInput,
-    setUserInput,
-  } = useContext(UserContext);
+  const { isAuthenticated, login, signout, items, addItem, removeItem, clearList } = useContext(AppContext);
+  const [inputValue, setInputValue] = useState('');
+
+  const handleAdd = () => {
+    if (inputValue.trim()) {
+      addItem(inputValue.trim());
+      setInputValue('');
+    }
+  };
 
   return (
-    <div>
-      <h1 id="current-user">{`Current user:${name}, isAuthenticated: ${
-        authenticated ? "Yes" : "No"
-      }`}</h1>
-      <button
-        onClick={() => {
-          setName("Ted");
-          setAuthenticated(true);
-        }}
-        id="login-btn"
-      >
-        Login
-      </button>
-      <button
-        id="signout"
-        onClick={() => {
-          setName("");
-          setAuthenticated(false);
-        }}
-      >
-        Signout
-      </button>
-      <br />
-      <br />
+    <div className="app">
+      <button id="login-btn" onClick={login}>Login</button>
+      <button id="signout" onClick={signout}>Sign Out</button>
+      <div id="current-user">
+        Current user: rohan, isAuthenticated: {isAuthenticated ? 'Yes' : 'No'}
+      </div>
       <input
-        type="text"
         id="shopping-input"
-        value={userInput}
-        onChange={(e) => {
-          setUserInput(e.target.value);
-        }}
+        type="text"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
       />
-      <br />
-      <button
-        onClick={() => {
-          setList([
-            ...list,
-            {
-              item: userInput,
-              idItem: `#item-${userInput}`,
-              removeItem: `#remove-${userInput}`,
-            },
-          ]);
-          setUserInput("");
-        }}
-      >
-        Add Task
-      </button>
-      <button
-        onClick={() => {
-          setList([]);
-          setUserInput("");
-        }}
-        id="clear-list"
-      >
-        Clear List
-      </button>
-
-      <br />
-      <br />
-
-      <ul className="list-ul">
-        {" "}
-        {list.map((item) => {
-          return (
-            <li id={item.idItem} key={item.idItem}>
-              {item.idItem}
-              <button
-                id={item.removeItem}
-                onClick={() => {
-                  const newArr = list.filter((fItem) => {
-                    return item.idItem != fItem.idItem;
-                  });
-                  setList(newArr);
-                }}
-              >
-                X
-              </button>
-            </li>
-          );
-        })}
+      <button onClick={handleAdd}>Add</button>
+      <button id="clear-list" onClick={clearList}>Clear List</button>
+      <ul>
+        {items.map((item) => (
+          <li key={item} id={`item-${item}`}>
+            {item}
+            <button id={`remove-${item}`} onClick={() => removeItem(item)}>Remove</button>
+          </li>
+        ))}
       </ul>
     </div>
   );
 };
 
-export default App;
+// Wrap your App component with the provider
+const MainApp = () => (
+  <AppProvider>
+    <App />
+  </AppProvider>
+);
+
+export default MainApp;
