@@ -1,37 +1,9 @@
-import React, { createContext, useState } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 import App from "./components/App";
 
-export const UserContext = createContext({});
 
-const UserProvider = ({ children }) => {
-  const [name, setName] = useState("");
-  const [authenticated, setAuthenticated] = useState(false);
-  const [list, setList] = useState([]);
-  const [userInput, setUserInput] = useState("");
+const rootElement = document.getElementById('root');
 
-  return (
-    <UserContext.Provider
-      value={{
-        name,
-        setName,
-        list,
-
-        setList,
-        authenticated,
-        setAuthenticated,
-        userInput,
-        setUserInput,
-      }}
-    >
-      {children}
-    </UserContext.Provider>
-  );
-};
-
-ReactDOM.render(
-  <UserProvider>
-    <App />
-  </UserProvider>,
-  document.getElementById("root")
-);
+// Render the App component on the root DOM node
+ReactDOM.render(<App />, rootElement);
